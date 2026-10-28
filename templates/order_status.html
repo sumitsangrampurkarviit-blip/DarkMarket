@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}ORDER STATUS - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<h1>ORDER STATUS</h1>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <form action="/order/status" method="POST" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div style="flex: 1;">
+            <label for="order_ref">Enter Order Reference Number:</label>
+            <input type="text" id="order_ref" name="order_ref" value="{{ order_ref|default('', true) }}" placeholder="e.g. A1B2C3D4" style="margin-bottom: 0;">
+        </div>
+        <button type="submit" class="btn">LOOKUP</button>
+    </form>
+</div>
+
+{% if order_ref is defined and order_ref %}
+    {% if order %}
+    <div class="two-column">
+        <div class="card">
+            <h3>ORDER INFO</h3>
+            <p><strong>Ref:</strong> <span class="crypto-address" style="display:inline; padding: 0.2rem;">{{ order.order_ref }}</span></p>
+            <p><strong>Date:</strong> {{ order.created_at }}</p>
+            <p><strong>Payment:</strong> {{ order.crypto_type }}</p>
+            <p><strong>Total:</strong> ${{ "%.2f"|format(order.amount_usd) }}</p>
+            <p><strong>TX Proof:</strong> {{ order.tx_proof or 'N/A' }}</p>
+        </div>
+        
+        <div class="card">
+            <h3>STATUS TRACKING</h3>
+            <div style="margin-bottom: 1rem;">
+                <span class="badge {{ order.status }}" style="font-size: 1rem;">{{ order.status|upper }}</span>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item active">
+                    <strong>Order Placed</strong>
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Awaiting payment confirmation</p>
+                </div>
+                
+                <div class="timeline-item {% if order.status in ['confirmed', 'shipped', 'completed'] %}active{% endif %}">
+                    <strong>Payment Confirmed</strong>
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Transaction verified on blockchain</p>
+                </div>
+                
+                <div class="timeline-item {% if order.status in ['shipped', 'completed'] %}active{% endif %}">
+                    <strong>Shipped</strong>
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Package is in transit</p>
+                </div>
+                
+                <div class="timeline-item {% if order.status == 'completed' %}active{% endif %}">
+                    <strong>Completed</strong>
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Order finalized</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <p style="color: var(--error);">> Order not found. Check your reference number.</p>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

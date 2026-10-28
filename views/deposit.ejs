@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+<h2 style="margin-bottom:1rem">▸ DEPOSIT FUNDS</h2>
+
+<div class="grid grid-2">
+  <div>
+    <% if(step==='pay' && deposit && selectedWallet){ %>
+      <div class="card">
+        <h3 class="text-green">◆ Deposit <%= deposit.id %></h3>
+        <p class="mt-1 mb-1">Send <strong class="text-orange">$<%= deposit.amount.toFixed(2) %></strong> worth of
+          <strong><%= selectedWallet.symbol %></strong> to the address below:</p>
+
+        <div class="copy-box">
+          <code><%= selectedWallet.address %></code>
+          <button class="btn btn-sm" onclick="copyText('<%= selectedWallet.address %>')">COPY</button>
+        </div>
+
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.8rem;margin-top:1rem">
+          <p class="text-dim" style="font-size:.8rem;line-height:1.6">
+            ⚠ After sending, admin will verify your transaction and credit your balance.<br>
+            Open a <a href="/tickets/new">support ticket</a> with your TX hash to speed up verification.
+          </p>
+        </div>
+      </div>
+
+    <% } else { %>
+      <div class="card">
+        <h3 style="color:#ddd;margin-bottom:.3rem">New Deposit</h3>
+        <p class="text-dim" style="font-size:.8rem;margin-bottom:1rem">
+          Min: <span class="text-orange">$50</span> · Max: <span class="text-orange">$5,000</span>
+          · Admin verifies payment and credits your balance manually.
+        </p>
+        <form method="POST" action="/deposit">
+          <div class="form-group">
+            <label>Amount (USD)</label>
+            <input type="number" name="amount" min="50" max="5000" step="0.01" required placeholder="50.00">
+          </div>
+          <div class="form-group">
+            <label>Pay With</label>
+            <select name="payment_method" required>
+              <option value="btc">Bitcoin (BTC)</option>
+              <option value="eth">Ethereum (ETH)</option>
+              <option value="usdt_bep20">USDT BEP20</option>
+              <option value="xmr">Monero (XMR)</option>
+            </select>
+          </div>
+          <button class="btn btn-orange btn-block">GET PAYMENT ADDRESS →</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <div>
+    <h3 style="color:#ddd;margin-bottom:.5rem">Deposit History</h3>
+    <% if(!deposits.length){ %><p class="text-dim" style="font-size:.85rem">No deposits yet</p><% } %>
+    <% deposits.forEach(d => { %>
+      <div class="card" style="margin-bottom:.5rem;padding:.6rem">
+        <div class="flex-between">
+          <span class="text-dim" style="font-size:.75rem"><%= d.id %></span>
+          <span class="badge <%= d.status==='confirmed'?'badge-green':d.status==='rejected'?'badge-red':'badge-orange' %>"><%= d.status %></span>
+        </div>
+        <div class="flex-between mt-1">
+          <span class="text-orange">$<%= d.amount.toFixed(2) %></span>
+          <span class="text-dim" style="font-size:.75rem"><%= d.payment_method.toUpperCase() %></span>
+        </div>
+        <div class="text-dim" style="font-size:.7rem;margin-top:.2rem"><%= d.created_at %></div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+<%- include('partials/footer') %>

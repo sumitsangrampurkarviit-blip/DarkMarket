@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<div style="max-width:700px;margin:0 auto">
+  <h2 style="margin-bottom:1rem">▸ ORDER PLACED ✓</h2>
+  <div class="card mb-1">
+    <div class="flex-between mb-1">
+      <span>Order <strong class="text-green"><%= order.id %></strong></span>
+      <span class="badge badge-orange"><%= order.status %></span>
+    </div>
+    <% if(order.payment_method !== 'balance' && order.payment_address){ %>
+      <p class="mb-1">Send <strong class="text-orange">$<%= order.total.toFixed(2) %></strong> worth of <strong><%= order.payment_method.toUpperCase() %></strong> to:</p>
+      <div class="copy-box">
+        <code><%= order.payment_address %></code>
+        <button class="btn btn-sm" onclick="copyText('<%= order.payment_address %>')">COPY</button>
+      </div>
+      <% if(qr){ %><div class="qr"><img src="<%= qr %>" alt="QR"></div><% } %>
+      <p class="text-dim" style="font-size:.8rem">After sending, open a <a href="/tickets/new">support ticket</a> with your TX hash for faster processing.</p>
+    <% } else { %>
+      <p class="text-green">✓ Paid from account balance. Your order is being processed.</p>
+    <% } %>
+  </div>
+  <h3 style="color:#ddd;margin-bottom:.5rem">Items</h3>
+  <% orderItems.forEach(i => { %>
+    <div class="flex-between" style="padding:.3rem 0;border-bottom:1px solid var(--border)">
+      <span><%= i.product_name %> × <%= i.quantity %></span>
+      <span class="text-orange">$<%= (i.price*i.quantity).toFixed(2) %></span>
+    </div>
+  <% }) %>
+  <div class="flex-between mt-1"><strong>Total</strong><strong class="text-orange">$<%= order.total.toFixed(2) %></strong></div>
+  <div class="mt-2"><a href="/orders/<%= order.id %>" class="btn">VIEW ORDER</a> <a href="/shop" class="btn btn-orange">CONTINUE SHOPPING</a></div>
+</div>
+<%- include('partials/footer') %>

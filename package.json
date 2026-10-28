@@ -1,0 +1,22 @@
+{
+  "name": "shadow-cards",
+  "version": "1.0.0",
+  "description": "Shadow Cards - Underground Game Cards Marketplace",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "multer": "^2.0.1",
+    "pdfkit": "^0.15.1",
+    "qrcode": "^1.5.4",
+    "sql.js": "^1.11.0",
+    "uuid": "^11.1.0"
+  }
+}

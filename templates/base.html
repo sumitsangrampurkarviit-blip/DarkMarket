@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SHADOW MARKET{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="nav">
+        <div class="logo">
+<pre class="logo-pre">
+╔═══════════════════════════════╗
+║   ▓ SHADOW MARKET ▓           ║
+╚═══════════════════════════════╝
+</pre>
+        </div>
+        <div class="nav-links">
+            <a href="/">[SHOP]</a>
+            <a href="/cart">[CART <span id="cart-badge" class="cart-badge">0</span>]</a>
+            <a href="/order/status">[ORDER STATUS]</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="footer">
+        <p>© SHADOW MARKET | All transactions in cryptocurrency only | PGP verified</p>
+        <p style="font-size: 0.7rem;">Powered by Tor Hidden Services</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

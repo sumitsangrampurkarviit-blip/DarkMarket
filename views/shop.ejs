@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+<h2 style="margin-bottom:1rem">▸ SHOP</h2>
+<div class="two-col">
+  <div class="side">
+    <form method="GET" action="/shop" id="shop-filter-form" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label>Search</label>
+        <input type="text" name="q" value="<%= f.q||'' %>" placeholder="Search cards...">
+      </div>
+      <div class="form-group">
+        <label>Sort By</label>
+        <select name="sort" onchange="document.getElementById('shop-filter-form').submit()">
+          <option value="">Newest</option>
+          <option value="low" <%= f.sort==='low'?'selected':'' %>>Price: Low to High</option>
+          <option value="high" <%= f.sort==='high'?'selected':'' %>>Price: High to Low</option>
+        </select>
+      </div>
+      <input type="hidden" name="category" value="<%= f.category||'' %>">
+      <div class="flex" style="gap:.5rem">
+        <button type="submit" class="btn btn-sm" style="flex:1">Filter</button>
+        <% if(f.category || f.q || f.sort){ %>
+          <a href="/shop" class="btn btn-sm btn-red" title="Reset Filters">✕</a>
+        <% } %>
+      </div>
+    </form>
+    <ul class="sidebar-list">
+      <% const qParam = f.q ? '&q=' + encodeURIComponent(f.q) : ''; %>
+      <% const sParam = f.sort ? '&sort=' + encodeURIComponent(f.sort) : ''; %>
+      <li><a href="/shop<%= (f.q || f.sort) ? '?' + (f.sort ? 'sort=' + encodeURIComponent(f.sort) : '') + (f.sort && f.q ? '&' : '') + (f.q ? 'q=' + encodeURIComponent(f.q) : '') : '' %>" class="<%= !f.category?'active':'' %>">All</a></li>
+      <% categories.forEach(c => { %>
+        <li><a href="/shop?category=<%= c.slug %><%= sParam %><%= qParam %>" class="<%= f.category===c.slug?'active':'' %>"><%= c.icon %> <%= c.name %></a></li>
+      <% }) %>
+    </ul>
+  </div>
+  <div class="content">
+    <div class="grid grid-3">
+      <% products.forEach(p => { %>
+        <div class="card prod-card">
+          <div class="prod-img">
+            <% if(p.image_url){ %>
+              <img src="<%= p.image_url %>" alt="<%= p.name %>">
+            <% } else { %>
+              <div class="icon">🃏</div>
+            <% } %>
+          </div>
+          <h3><%= p.name %></h3>
+          <div class="text-dim" style="font-size:.75rem"><%= p.cat %></div>
+          <div class="price">$<%= p.price.toFixed(2) %></div>
+          <div class="stock"><%= p.stock > 0 ? p.stock + ' in stock' : 'SOLD OUT' %></div>
+          <a href="/shop/<%= p.id %>" class="btn btn-sm">VIEW</a>
+        </div>
+      <% }) %>
+    </div>
+    <% if(!products.length){ %><div class="empty"><div class="icon">🔍</div><p>No products found</p></div><% } %>
+  </div>
+</div>
+<%- include('partials/footer') %>

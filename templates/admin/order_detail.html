@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}ORDER DETAILS - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1rem;">
+    <a href="/admin/dashboard" class="btn">< BACK TO DASHBOARD</a>
+</div>
+
+<h1>ORDER REF: {{ order.order_ref }}</h1>
+<p>Created: {{ order.created_at }}</p>
+
+<div class="two-column">
+    <div class="card">
+        <h3>CUSTOMER INFO</h3>
+        <p><strong>Name:</strong> {{ order.customer_name }}</p>
+        <p><strong>Address:</strong><br><pre style="white-space: pre-wrap; background: var(--bg-color); padding: 0.5rem; border: 1px solid var(--border-color);">{{ order.shipping_address }}</pre></p>
+        <hr style="border: none; border-bottom: 1px solid var(--border-color); margin: 1rem 0;">
+        
+        <h3>PAYMENT INFO</h3>
+        <p><strong>Amount:</strong> ${{ "%.2f"|format(order.amount_usd) }}</p>
+        <p><strong>Method:</strong> {{ order.crypto_type|upper }}</p>
+        <p><strong>TX Proof / ID:</strong> <br><span class="crypto-address" style="word-break: break-all;">{{ order.tx_proof or 'Not Provided' }}</span></p>
+        <hr style="border: none; border-bottom: 1px solid var(--border-color); margin: 1rem 0;">
+        
+        <h3>ORDER ITEMS</h3>
+        <table>
+            <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ "%.2f"|format(item.price_at_purchase) }}</td>
+                <td>${{ "%.2f"|format(item.price_at_purchase * item.quantity) }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No items found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="card">
+        <h3>UPDATE STATUS</h3>
+        <form action="/admin/order/{{ order.id }}/status" method="POST">
+            <label for="status">Current Status:</label>
+            <select name="status" id="status">
+                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>PENDING</option>
+                <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>CONFIRMED</option>
+                <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>SHIPPED</option>
+                <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>COMPLETED</option>
+            </select>
+            
+            <label for="notes">Admin Notes:</label>
+            <textarea name="notes" id="notes" rows="6">{{ order.notes or '' }}</textarea>
+            
+            <button type="submit" class="btn" style="width: 100%;">UPDATE ORDER</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

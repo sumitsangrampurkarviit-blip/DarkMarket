@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+<p style="margin-bottom:1rem"><a href="/admin/orders">← Back to Orders</a></p>
+<div class="flex-between mb-1">
+  <h2>Order <%= order.id %></h2>
+  <span class="badge <%= order.status==='completed'?'badge-green':order.status==='cancelled'?'badge-red':'badge-orange' %>"><%= order.status %></span>
+</div>
+<div class="grid grid-2">
+  <div>
+    <div class="card mb-1">
+      <h3 style="color:#ddd;margin-bottom:.5rem">Order Info</h3>
+      <p>User: <strong><%= order.username %></strong> (<%= order.email %>)</p>
+      <p>Date: <%= order.created_at %></p>
+      <p>Payment: <strong><%= (order.payment_method||'').toUpperCase() %></strong></p>
+      <% if(order.payment_address){ %><p style="word-break:break-all">Address: <code class="text-dim"><%= order.payment_address %></code></p><% } %>
+      <% if(order.tx_hash){ %><p style="word-break:break-all">TX: <code class="text-dim"><%= order.tx_hash %></code></p><% } %>
+    </div>
+    <div class="card">
+      <h3 style="color:#ddd;margin-bottom:.5rem">Items</h3>
+      <% items.forEach(i => { %>
+        <div class="flex-between" style="padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span><%= i.product_name %> × <%= i.quantity %></span>
+          <span class="text-orange">$<%= (i.price*i.quantity).toFixed(2) %></span>
+        </div>
+      <% }) %>
+      <div class="flex-between mt-1"><strong>Total</strong><strong class="text-orange">$<%= order.total.toFixed(2) %></strong></div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h3 style="color:#ddd;margin-bottom:.8rem">Update Order</h3>
+      <form method="POST" action="/admin/orders/<%= order.id %>">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="pending" <%= order.status==='pending'?'selected':'' %>>Pending</option>
+            <option value="awaiting_payment" <%= order.status==='awaiting_payment'?'selected':'' %>>Awaiting Payment</option>
+            <option value="processing" <%= order.status==='processing'?'selected':'' %>>Processing</option>
+            <option value="completed" <%= order.status==='completed'?'selected':'' %>>Completed</option>
+            <option value="cancelled" <%= order.status==='cancelled'?'selected':'' %>>Cancelled</option>
+            <option value="disputed" <%= order.status==='disputed'?'selected':'' %>>Disputed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Card Details (visible to buyer when completed)</label>
+          <textarea name="card_details" rows="4" placeholder="Enter game card codes here..."><%= order.card_details||'' %></textarea>
+        </div>
+        <div class="form-group">
+          <label>TX Hash</label>
+          <input type="text" name="tx_hash" value="<%= order.tx_hash||'' %>" placeholder="Transaction hash...">
+        </div>
+        <div class="form-group">
+          <label>Admin Notes (internal)</label>
+          <textarea name="admin_notes" rows="2"><%= order.admin_notes||'' %></textarea>
+        </div>
+        <button class="btn btn-orange btn-block">UPDATE ORDER</button>
+      </form>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

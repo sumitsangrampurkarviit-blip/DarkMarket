@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title!=='undefined'? title+' · SHADOW CARDS':'SHADOW CARDS' %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="scanlines"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="brand">◆ SHADOW CARDS</a>
+    <div class="nav-links">
+      <a href="/shop">Shop</a>
+      <% if(user){ %>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+        <a href="/deposit">Deposit</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/profile"><%= user.username %></a>
+        <span class="bal">◈ $<%= user.balance.toFixed(2) %></span>
+        <% if(user.role==='admin'){ %><a href="/admin" class="admin-link">Admin</a><% } %>
+        <a href="/auth/logout">Logout</a>
+      <% } else { %>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/register">Register</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+<% if(messages.success){ %><div class="alert ok"><%= messages.success %></div><% } %>
+<% if(messages.error){ %><div class="alert err"><%= messages.error %></div><% } %>
+<main>

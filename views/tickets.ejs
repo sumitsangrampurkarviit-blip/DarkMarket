@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+<div class="flex-between mb-1">
+  <h2>▸ TICKETS</h2>
+  <a href="/tickets/new" class="btn btn-sm">+ NEW TICKET</a>
+</div>
+<% if(!tickets.length){ %>
+  <div class="empty"><div class="icon">🎫</div><p>No tickets</p></div>
+<% } else { %>
+  <table>
+    <tr><th>#</th><th>Subject</th><th>Status</th><th>Updated</th><th></th></tr>
+    <% tickets.forEach(t => { %>
+    <tr>
+      <td class="text-dim">#<%= t.id %></td>
+      <td><%= t.subject %></td>
+      <td><span class="badge <%= t.status==='closed'?'badge-dim':t.status==='replied'?'badge-green':'badge-orange' %>"><%= t.status %></span></td>
+      <td class="text-dim"><%= t.updated_at %></td>
+      <td><a href="/tickets/<%= t.id %>" class="btn btn-sm">VIEW</a></td>
+    </tr>
+    <% }) %>
+  </table>
+<% } %>
+<%- include('partials/footer') %>

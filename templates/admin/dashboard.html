@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}ADMIN DASHBOARD - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>ADMIN PANEL — ORDER MANAGEMENT</h1>
+    <a href="/admin/logout" class="btn">LOGOUT</a>
+</div>
+
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-around; text-align: center;">
+    <div>
+        <h3>TOTAL ORDERS</h3>
+        <p class="price">{{ orders|length }}</p>
+    </div>
+    <div>
+        <h3>PENDING</h3>
+        <p class="price" style="color: var(--warning);">{{ orders|selectattr('status', 'equalto', 'pending')|list|length }}</p>
+    </div>
+    <div>
+        <h3>CONFIRMED</h3>
+        <p class="price" style="color: #00aaff;">{{ orders|selectattr('status', 'equalto', 'confirmed')|list|length }}</p>
+    </div>
+    <div>
+        <h3>SHIPPED</h3>
+        <p class="price" style="color: var(--success);">{{ orders|selectattr('status', 'equalto', 'shipped')|list|length }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Order Ref</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Crypto</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td><strong>{{ order.order_ref }}</strong></td>
+                <td>{{ order.created_at }}</td>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ order.crypto_type|upper }}</td>
+                <td>${{ "%.2f"|format(order.amount_usd) }}</td>
+                <td><span class="badge {{ order.status }}">{{ order.status|upper }}</span></td>
+                <td><a href="/admin/order/{{ order.id }}" class="btn" style="padding: 0.2rem 0.5rem;">VIEW</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

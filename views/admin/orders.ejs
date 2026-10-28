@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ MANAGE ORDERS</h2>
+<div class="tabs">
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/orders" class="<%= !fStatus?'active':'' %>">All</a>
+  <a href="/admin/orders?status=awaiting_payment" class="<%= fStatus==='awaiting_payment'?'active':'' %>">Awaiting</a>
+  <a href="/admin/orders?status=processing" class="<%= fStatus==='processing'?'active':'' %>">Processing</a>
+  <a href="/admin/orders?status=completed" class="<%= fStatus==='completed'?'active':'' %>">Completed</a>
+  <a href="/admin/orders?status=cancelled" class="<%= fStatus==='cancelled'?'active':'' %>">Cancelled</a>
+</div>
+<% if(!orders.length){ %><div class="empty"><p>No orders</p></div><% } else { %>
+<table>
+  <tr><th>ID</th><th>User</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr>
+  <% orders.forEach(o => { %>
+  <tr>
+    <td class="text-green"><%= o.id %></td>
+    <td><%= o.username %></td>
+    <td class="text-orange">$<%= o.total.toFixed(2) %></td>
+    <td><%= (o.payment_method||'').toUpperCase() %></td>
+    <td><span class="badge <%= o.status==='completed'?'badge-green':o.status==='cancelled'?'badge-red':'badge-orange' %>"><%= o.status %></span></td>
+    <td class="text-dim" style="font-size:.8rem"><%= o.created_at %></td>
+    <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm">MANAGE</a></td>
+  </tr>
+  <% }) %>
+</table>
+<% } %>
+<%- include('../partials/footer') %>

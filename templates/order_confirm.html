@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}ORDER CONFIRMATION - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <pre style="color: var(--success); font-weight: bold; font-size: 1.5rem; margin-bottom: 1rem;">
+  _   _ 
+ / \ / \
+( Y | Y )
+ \_ | _/
+   \|/  
+    |   
+    </pre>
+    <h1 style="color: var(--success);">ORDER RECEIVED</h1>
+    
+    <p>Your order has been received. Save your order reference number below.</p>
+    
+    <div class="crypto-address" style="display: inline-flex; justify-content: center; margin: 2rem auto;">
+        <span id="order-ref" style="font-size: 1.5rem; letter-spacing: 2px; font-weight: bold; padding: 0 1rem;">{{ order_ref }}</span>
+        <button class="btn" onclick="copyToClipboard('order-ref')">COPY</button>
+    </div>
+    
+    <p>You will receive your shipment once payment is confirmed.</p>
+    
+    <div style="margin-top: 2rem;">
+        <a href="/order/{{ order_ref }}" class="btn">CHECK ORDER STATUS</a>
+        <a href="/" class="btn" style="margin-left: 1rem;">BACK TO SHOP</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Clear cart upon successful order
+    Cart.clear();
+</script>
+{% endblock %}

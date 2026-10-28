@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+<h2 style="margin-bottom:1rem">▸ MY ORDERS</h2>
+<% if(!orders.length){ %>
+  <div class="empty"><div class="icon">📋</div><p>No orders yet</p><a href="/shop" class="btn mt-1">SHOP NOW</a></div>
+<% } else { %>
+  <table>
+    <tr><th>Order ID</th><th>Date</th><th>Total</th><th>Payment</th><th>Status</th><th></th></tr>
+    <% orders.forEach(o => { %>
+    <tr>
+      <td class="text-green"><%= o.id %></td>
+      <td class="text-dim"><%= o.created_at %></td>
+      <td class="text-orange">$<%= o.total.toFixed(2) %></td>
+      <td><%= (o.payment_method||'').toUpperCase() %></td>
+      <td>
+        <span class="badge <%= o.status==='completed'?'badge-green':o.status==='cancelled'?'badge-red':'badge-orange' %>"><%= o.status %></span>
+      </td>
+      <td><a href="/orders/<%= o.id %>" class="btn btn-sm">VIEW</a></td>
+    </tr>
+    <% }) %>
+  </table>
+<% } %>
+<%- include('partials/footer') %>

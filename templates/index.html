@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}SHADOW MARKET - Catalog{% endblock %}
+
+{% block content %}
+<div class="terminal-header">
+    <p>Welcome to SHADOW MARKET</p>
+    <p>All items ship worldwide. Payment: BTC / XMR only.</p>
+    <p>[BROWSE CATALOG]</p>
+</div>
+
+<div class="filters">
+    <a href="/" class="btn filter-btn">ALL</a>
+    <a href="/?category=hardware" class="btn filter-btn">HARDWARE</a>
+    <a href="/?category=services" class="btn filter-btn">SERVICES</a>
+    <a href="/?category=digital" class="btn filter-btn">DIGITAL</a>
+</div>
+
+<div class="product-grid">
+    {% if products %}
+        {% for product in products %}
+        <div class="card">
+            <h3><a href="/product/{{ product.id }}">{{ product.name }}</a></h3>
+            <p>{{ product.description[:80] }}{% if product.description|length > 80 %}...{% endif %}</p>
+            <p class="price">${{ "%.2f"|format(product.price_usd) }}</p>
+            {% if product.in_stock %}
+                <button class="btn" onclick="addToCart({{ product.id }}, {{ product.price_usd }}, '{{ product.name }}')">ADD TO CART</button>
+            {% else %}
+                <span class="badge out-of-stock">OUT OF STOCK</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No products available. Check back soon.</p>
+    {% endif %}
+</div>
+{% endblock %}

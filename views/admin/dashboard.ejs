@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ ADMIN DASHBOARD</h2>
+<div class="stats">
+  <div class="stat"><div class="num"><%= stats.users %></div><div class="label">Users</div></div>
+  <div class="stat"><div class="num"><%= stats.orders %></div><div class="label">Total Orders</div></div>
+  <div class="stat"><div class="num" style="color:var(--orange)"><%= stats.pending %></div><div class="label">Pending Orders</div></div>
+  <div class="stat"><div class="num">$<%= stats.revenue.toFixed(2) %></div><div class="label">Revenue</div></div>
+  <div class="stat"><div class="num" style="color:var(--orange)"><%= stats.deposits %></div><div class="label">Pending Deposits</div></div>
+  <div class="stat"><div class="num" style="color:var(--orange)"><%= stats.tickets %></div><div class="label">Open Tickets</div></div>
+</div>
+<div class="tabs">
+  <a href="/admin" class="active">Dashboard</a>
+  <a href="/admin/orders">Orders</a>
+  <a href="/admin/products">Products</a>
+  <a href="/admin/categories">Categories</a>
+  <a href="/admin/deposits">Deposits</a>
+  <a href="/admin/tickets">Tickets</a>
+  <a href="/admin/users">Users</a>
+  <a href="/admin/settings">⚙ Crypto</a>
+</div>
+<h3 style="color:#ddd;margin-bottom:.5rem">Recent Orders</h3>
+<table>
+  <tr><th>ID</th><th>User</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr>
+  <% recent.forEach(o => { %>
+  <tr>
+    <td class="text-green"><%= o.id %></td>
+    <td><%= o.username %></td>
+    <td class="text-orange">$<%= o.total.toFixed(2) %></td>
+    <td><span class="badge <%= o.status==='completed'?'badge-green':o.status==='cancelled'?'badge-red':'badge-orange' %>"><%= o.status %></span></td>
+    <td class="text-dim"><%= o.created_at %></td>
+    <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm">MANAGE</a></td>
+  </tr>
+  <% }) %>
+</table>
+<%- include('../partials/footer') %>

@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<p style="margin-bottom:1rem"><a href="/orders">← Back to Orders</a></p>
+<div style="max-width:700px">
+  <div class="flex-between mb-1">
+    <h2>Order <%= order.id %></h2>
+    <span class="badge <%= order.status==='completed'?'badge-green':order.status==='cancelled'?'badge-red':'badge-orange' %>"><%= order.status.replace('_',' ').toUpperCase() %></span>
+  </div>
+
+  <div class="card mb-1">
+    <div class="text-dim" style="font-size:.8rem">Placed: <%= order.created_at %></div>
+    <div class="text-dim" style="font-size:.8rem">Payment: <strong><%= (order.payment_method||'').toUpperCase() %></strong></div>
+
+    <% if(order.payment_address && order.status === 'awaiting_payment'){ %>
+      <p class="mt-1">Send <strong class="text-orange">$<%= order.total.toFixed(2) %></strong> worth of <strong><%= (order.payment_method||'').toUpperCase() %></strong> to:</p>
+      <div class="copy-box">
+        <code><%= order.payment_address %></code>
+        <button class="btn btn-sm" onclick="copyText('<%= order.payment_address %>')">COPY</button>
+      </div>
+      <p class="text-dim" style="font-size:.8rem;margin-top:.5rem">After sending, <a href="/tickets/new">open a ticket</a> with your TX hash for faster processing.</p>
+    <% } %>
+  </div>
+
+  <h3 style="color:#ddd;margin-bottom:.5rem">Items</h3>
+  <% items.forEach(i => { %>
+    <div class="flex-between" style="padding:.4rem 0;border-bottom:1px solid var(--border)">
+      <span><%= i.product_name %> × <%= i.quantity %></span>
+      <span class="text-orange">$<%= (i.price*i.quantity).toFixed(2) %></span>
+    </div>
+  <% }) %>
+  <div class="flex-between mt-1">
+    <strong>Total</strong>
+    <strong class="text-orange" style="font-size:1.2rem">$<%= order.total.toFixed(2) %></strong>
+  </div>
+
+  <% if(order.status === 'completed' && order.card_details){ %>
+    <div class="card mt-2" style="border-color:var(--greend)">
+      <h3 class="text-green">◆ Card Details</h3>
+      <pre style="white-space:pre-wrap;color:var(--text);margin-top:.5rem"><%= order.card_details %></pre>
+    </div>
+  <% } %>
+
+  <div class="mt-2 flex" style="gap:.5rem">
+    <% if(order.status === 'completed'){ %>
+      <a href="/orders/<%= order.id %>/receipt" class="btn">⬇ RECEIPT</a>
+    <% } %>
+    <a href="/tickets/new" class="btn btn-orange">OPEN TICKET</a>
+  </div>
+</div>
+<%- include('partials/footer') %>

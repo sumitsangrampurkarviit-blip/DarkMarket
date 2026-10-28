@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ DEPOSITS</h2>
+<% if(!deposits.length){ %>
+  <div class="empty"><p>No deposits</p></div>
+<% } else { %>
+<table>
+  <tr><th>ID</th><th>User</th><th>Requested</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+  <% deposits.forEach(d => { %>
+  <tr>
+    <td class="text-dim"><%= d.id %></td>
+    <td><%= d.username %></td>
+    <td class="text-orange">$<%= d.amount.toFixed(2) %></td>
+    <td><%= d.payment_method.toUpperCase() %></td>
+    <td><span class="badge <%= d.status==='confirmed'?'badge-green':d.status==='rejected'?'badge-red':'badge-orange' %>"><%= d.status %></span></td>
+    <td class="text-dim" style="font-size:.8rem"><%= d.created_at %></td>
+    <td>
+      <% if(d.status==='pending'){ %>
+        <details style="display:inline-block">
+          <summary class="btn btn-sm">✓ CONFIRM</summary>
+          <div class="card" style="position:absolute;z-index:50;min-width:220px;margin-top:.3rem">
+            <p style="font-size:.8rem;margin-bottom:.5rem">User requested: <strong class="text-orange">$<%= d.amount.toFixed(2) %></strong></p>
+            <form method="POST" action="/admin/deposits/<%= d.id %>/confirm">
+              <div class="form-group">
+                <label>Amount to Credit ($)</label>
+                <input type="number" name="credit_amount" step="0.01" min="0.01" value="<%= d.amount.toFixed(2) %>" required>
+              </div>
+              <div class="form-group">
+                <label>TX Hash (optional)</label>
+                <input type="text" name="tx_hash" placeholder="Transaction hash...">
+              </div>
+              <button class="btn btn-block">CONFIRM & CREDIT</button>
+            </form>
+          </div>
+        </details>
+        <form method="POST" action="/admin/deposits/<%= d.id %>/reject" style="display:inline">
+          <button class="btn btn-sm btn-red">✕ REJECT</button>
+        </form>
+      <% } else if(d.status==='confirmed'){ %>
+        <span class="text-green" style="font-size:.8rem">✓ Credited</span>
+      <% } else { %>
+        <span class="text-red" style="font-size:.8rem">✕ Rejected</span>
+      <% } %>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+<% } %>
+<%- include('../partials/footer') %>

@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ SUPPORT TICKETS</h2>
+<% if(!tickets.length){ %><div class="empty"><p>No tickets</p></div><% } else { %>
+<table>
+  <tr><th>#</th><th>User</th><th>Subject</th><th>Priority</th><th>Status</th><th>Updated</th><th></th></tr>
+  <% tickets.forEach(t => { %>
+  <tr>
+    <td class="text-dim">#<%= t.id %></td>
+    <td><%= t.username %></td>
+    <td><%= t.subject %></td>
+    <td><span class="badge <%= t.priority==='urgent'?'badge-red':t.priority==='high'?'badge-orange':'badge-dim' %>"><%= t.priority %></span></td>
+    <td><span class="badge <%= t.status==='closed'?'badge-dim':t.status==='replied'?'badge-green':'badge-orange' %>"><%= t.status %></span></td>
+    <td class="text-dim" style="font-size:.8rem"><%= t.updated_at %></td>
+    <td><a href="/admin/tickets/<%= t.id %>" class="btn btn-sm">REPLY</a></td>
+  </tr>
+  <% }) %>
+</table>
+<% } %>
+<%- include('../partials/footer') %>

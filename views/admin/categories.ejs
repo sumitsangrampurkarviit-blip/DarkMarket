@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ MANAGE CATEGORIES</h2>
+
+<div class="grid grid-2" style="gap:2rem">
+
+  <!-- Add new -->
+  <div>
+    <div class="card">
+      <h3 style="color:var(--green);margin-bottom:1rem">◆ Add Category</h3>
+      <form method="POST" action="/admin/categories">
+        <div class="form-group">
+          <label>Name <span class="text-dim" style="font-size:.75rem">(shown in menu & shop)</span></label>
+          <input type="text" name="name" required placeholder="e.g. Roblox Cards" id="cat-name">
+        </div>
+        <div class="form-group">
+          <label>Slug <span class="text-dim" style="font-size:.75rem">(URL key, no spaces)</span></label>
+          <input type="text" name="slug" required placeholder="e.g. roblox" id="cat-slug">
+        </div>
+        <div class="form-group">
+          <label>Icon <span class="text-dim" style="font-size:.75rem">(any emoji)</span></label>
+          <input type="text" name="icon" placeholder="🎮" maxlength="4" style="width:80px">
+        </div>
+        <div class="form-group">
+          <label>Sort Order <span class="text-dim" style="font-size:.75rem">(lower = first)</span></label>
+          <input type="number" name="sort_order" value="0" style="width:100px">
+        </div>
+        <button class="btn">ADD CATEGORY</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Existing categories -->
+  <div>
+    <h3 style="color:#ddd;margin-bottom:.8rem">◆ Existing Categories (<%= categories.length %>)</h3>
+    <% if(!categories.length){ %>
+      <div class="empty"><p>No categories yet</p></div>
+    <% } %>
+    <% categories.forEach(c => { %>
+      <div class="card" style="margin-bottom:.8rem">
+        <div class="flex-between" style="margin-bottom:.6rem">
+          <span style="font-size:1.1rem"><%= c.icon %> <strong style="color:#ddd"><%= c.name %></strong></span>
+          <span class="badge badge-dim">/<%= c.slug %></span>
+        </div>
+        <details>
+          <summary class="btn btn-sm">EDIT</summary>
+          <form method="POST" action="/admin/categories/<%= c.id %>" style="padding:.8rem 0">
+            <div class="grid grid-2" style="gap:.6rem">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" value="<%= c.name %>" required>
+              </div>
+              <div class="form-group">
+                <label>Slug</label>
+                <input type="text" name="slug" value="<%= c.slug %>" required>
+              </div>
+              <div class="form-group">
+                <label>Icon</label>
+                <input type="text" name="icon" value="<%= c.icon %>" maxlength="4" style="width:70px">
+              </div>
+              <div class="form-group">
+                <label>Sort Order</label>
+                <input type="number" name="sort_order" value="<%= c.sort_order %>" style="width:80px">
+              </div>
+            </div>
+            <div class="flex" style="gap:.5rem;margin-top:.3rem">
+              <button class="btn btn-sm btn-orange">SAVE</button>
+              <form method="POST" action="/admin/categories/<%= c.id %>/delete" style="display:inline" onsubmit="return confirm('Delete <%= c.name %>?')">
+                <button class="btn btn-sm btn-red">DELETE</button>
+              </form>
+            </div>
+          </form>
+        </details>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<script>
+// Auto-generate slug from name
+document.getElementById('cat-name').addEventListener('input', function() {
+  document.getElementById('cat-slug').value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'');
+});
+</script>
+<%- include('../partials/footer') %>

@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+<div style="max-width:600px;margin:0 auto">
+  <h2 style="margin-bottom:1rem">▸ NEW TICKET</h2>
+  <form method="POST" action="/tickets">
+    <div class="form-group"><label>Subject</label><input type="text" name="subject" required placeholder="Issue with order..."></div>
+    <div class="form-group">
+      <label>Related Order (optional)</label>
+      <select name="order_id"><option value="">None</option><% orders.forEach(o => { %><option value="<%= o.id %>"><%= o.id %></option><% }) %></select>
+    </div>
+    <div class="form-group">
+      <label>Priority</label>
+      <select name="priority"><option value="low">Low</option><option value="normal" selected>Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select>
+    </div>
+    <div class="form-group"><label>Message</label><textarea name="message" rows="5" required placeholder="Describe your issue..."></textarea></div>
+    <button class="btn btn-block">SUBMIT TICKET</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

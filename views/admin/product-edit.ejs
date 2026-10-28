@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+<div class="flex-between mb-1">
+  <p><a href="/admin/products">← Back to Products</a></p>
+  <span class="badge <%= product.is_active ? 'badge-green' : 'badge-red' %>"><%= product.is_active ? 'ACTIVE' : 'HIDDEN' %></span>
+</div>
+
+<h2 style="margin-bottom:1.5rem">▸ EDIT PRODUCT <span class="text-dim" style="font-size:.85rem">#<%= product.id %></span></h2>
+
+<form method="POST" action="/admin/products/<%= product.id %>" enctype="multipart/form-data">
+  <div class="grid grid-2" style="gap:2rem">
+
+    <!-- LEFT: Core fields -->
+    <div>
+      <div class="card">
+        <h3 style="color:var(--green);margin-bottom:1rem">◆ Listing Details</h3>
+
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" name="name" value="<%= product.name %>" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label>Caption / Description <span class="text-dim" style="font-size:.75rem">(shown on card & detail page)</span></label>
+          <textarea name="description" rows="4" placeholder="Short description shown to buyers..."><%= product.description || '' %></textarea>
+        </div>
+
+        <div class="grid grid-2" style="gap:.8rem">
+          <div class="form-group">
+            <label>Price (USD)</label>
+            <input type="number" name="price" step="0.01" min="0.01" value="<%= product.price %>" required>
+          </div>
+          <div class="form-group">
+            <label>Stock Quantity</label>
+            <input type="number" name="stock" min="0" value="<%= product.stock %>" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category_id">
+            <% categories.forEach(c => { %>
+              <option value="<%= c.id %>" <%= c.id === product.category_id ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="flex" style="gap:1.5rem;margin-top:.5rem">
+          <label style="cursor:pointer"><input type="checkbox" name="featured" <%= product.featured ? 'checked' : '' %>> ★ Featured</label>
+          <label style="cursor:pointer"><input type="checkbox" name="is_active" <%= product.is_active ? 'checked' : '' %>> ✓ Active (visible)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Image -->
+    <div>
+      <div class="card">
+        <h3 style="color:var(--green);margin-bottom:1rem">◆ Product Image</h3>
+
+        <% if(product.image_url){ %>
+          <div style="margin-bottom:1rem;text-align:center">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>"
+              style="max-width:100%;max-height:200px;border-radius:6px;border:1px solid var(--border);object-fit:cover">
+            <p class="text-dim" style="font-size:.75rem;margin-top:.3rem">Current image</p>
+          </div>
+        <% } else { %>
+          <div style="height:150px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px dashed var(--border);border-radius:6px;margin-bottom:1rem">
+            <span style="font-size:2rem;color:var(--dim)">No image</span>
+          </div>
+        <% } %>
+
+        <div class="form-group">
+          <label><%= product.image_url ? 'Replace Image' : 'Upload Image' %></label>
+          <input type="file" name="image" accept="image/*" style="color:var(--text);padding:.4rem 0">
+        </div>
+        <div style="background:#001500;border:1px solid var(--greend);border-radius:4px;padding:.6rem .8rem;font-size:.75rem;line-height:1.7;margin-bottom:.5rem">
+          <strong class="text-green">◆ Recommended dimensions</strong><br>
+          <span class="text-dim">
+            Size: <strong style="color:#ddd">856 × 540 px</strong> (driving licence card ratio 1.586 : 1)<br>
+            Format: PNG or JPG · Max 5MB<br>
+            Tip: use a 856 × 540 canvas in Photoshop / GIMP for a pixel-perfect fit.
+          </span>
+        </div>
+        <p class="text-dim" style="font-size:.75rem">Leave blank to keep current image.</p>
+      </div>
+
+      <!-- Preview card -->
+      <div class="card mt-1">
+        <h3 style="color:var(--dim);font-size:.8rem;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:1px">Live Preview</h3>
+        <div style="text-align:center">
+          <div class="text-dim" style="font-size:.75rem" id="prev-cat"><%= product.cat %></div>
+          <div style="color:#ddd;font-size:.95rem;margin:.3rem 0" id="prev-name"><%= product.name %></div>
+          <div style="color:var(--orange);font-size:1.1rem;font-weight:bold" id="prev-price">$<%= product.price.toFixed(2) %></div>
+          <div style="color:var(--dim);font-size:.75rem" id="prev-desc"><%= (product.description||'').substring(0,60) %><%= (product.description||'').length>60?'...':'' %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-2 flex" style="gap:1rem">
+    <button type="submit" class="btn btn-orange">◆ SAVE CHANGES</button>
+    <a href="/admin/products" class="btn btn-red">CANCEL</a>
+  </div>
+</form>
+
+<script>
+// Live preview updates
+document.querySelector('[name=name]').addEventListener('input', e => document.getElementById('prev-name').textContent = e.target.value);
+document.querySelector('[name=price]').addEventListener('input', e => document.getElementById('prev-price').textContent = '$' + (parseFloat(e.target.value)||0).toFixed(2));
+document.querySelector('[name=description]').addEventListener('input', e => {
+  const t = e.target.value;
+  document.getElementById('prev-desc').textContent = t.length > 60 ? t.substring(0,60)+'...' : t;
+});
+</script>
+<%- include('../partials/footer') %>

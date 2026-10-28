@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<p style="margin-bottom:1rem"><a href="/tickets">← Back to Tickets</a></p>
+<div style="max-width:700px">
+  <div class="flex-between mb-1">
+    <h2>Ticket #<%= ticket.id %></h2>
+    <span class="badge <%= ticket.status==='closed'?'badge-dim':ticket.status==='replied'?'badge-green':'badge-orange' %>"><%= ticket.status %></span>
+  </div>
+  <div class="card mb-1">
+    <strong><%= ticket.subject %></strong>
+    <div class="text-dim" style="font-size:.8rem">Priority: <%= ticket.priority %> <% if(ticket.order_id){ %> | Order: <a href="/orders/<%= ticket.order_id %>"><%= ticket.order_id %></a><% } %></div>
+  </div>
+  <div class="mb-2">
+    <% msgs.forEach(m => { %>
+      <div class="card" style="margin-bottom:.5rem;border-left:3px solid <%= m.role==='admin'?'var(--orange)':'var(--green)' %>">
+        <div class="flex-between" style="margin-bottom:.3rem">
+          <strong style="color:<%= m.role==='admin'?'var(--orange)':'var(--green)' %>"><%= m.username %> <% if(m.role==='admin'){ %>[ADMIN]<% } %></strong>
+          <span class="text-dim" style="font-size:.75rem"><%= m.created_at %></span>
+        </div>
+        <p style="white-space:pre-wrap"><%= m.message %></p>
+      </div>
+    <% }) %>
+  </div>
+  <% if(ticket.status !== 'closed'){ %>
+    <form method="POST" action="/tickets/<%= ticket.id %>">
+      <div class="form-group"><textarea name="message" rows="3" required placeholder="Your reply..."></textarea></div>
+      <button class="btn">REPLY</button>
+    </form>
+  <% } else { %>
+    <p class="text-dim">This ticket is closed.</p>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

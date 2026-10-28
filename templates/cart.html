@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}CART - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<h1>YOUR CART</h1>
+<div class="card">
+    <div id="cart-items">
+        <!-- Rendered via JS -->
+    </div>
+    
+    <div style="text-align: right; margin-top: 1.5rem; font-size: 1.2rem;">
+        TOTAL: <span class="price">$<span id="cart-total">0.00</span></span>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+        <a href="/" class="btn">CONTINUE SHOPPING</a>
+        <a href="/checkout" class="btn" style="background: var(--primary-accent); color: var(--bg-color);">PROCEED TO CHECKOUT</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        Cart.renderCartPage();
+    });
+</script>
+{% endblock %}

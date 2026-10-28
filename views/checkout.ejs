@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+<h2 style="margin-bottom:1rem">▸ CHECKOUT</h2>
+<div class="two-col">
+  <div class="content">
+    <div class="card mb-1">
+      <h3 style="color:#ddd;margin-bottom:.5rem">Order Summary</h3>
+      <% items.forEach(i => { %>
+        <div class="flex-between" style="padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span><%= i.name %> × <%= i.quantity %></span>
+          <span class="text-orange">$<%= (i.price*i.quantity).toFixed(2) %></span>
+        </div>
+      <% }) %>
+      <div class="flex-between mt-1">
+        <strong>Total</strong>
+        <strong class="text-orange" style="font-size:1.2rem">$<%= total.toFixed(2) %></strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h3 style="color:#ddd;margin-bottom:.8rem">Payment</h3>
+
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.8rem;margin-bottom:1rem">
+        <div class="flex-between">
+          <span class="text-dim" style="font-size:.85rem">Account Balance</span>
+          <span class="text-orange" style="font-size:1.1rem;font-weight:bold">$<%= user.balance.toFixed(2) %></span>
+        </div>
+        <% if(user.balance >= total){ %>
+          <div class="text-green" style="font-size:.75rem;margin-top:.3rem">✓ Sufficient balance</div>
+        <% } else { %>
+          <div class="text-red" style="font-size:.75rem;margin-top:.3rem">✕ Insufficient — need $<%= (total - user.balance).toFixed(2) %> more</div>
+        <% } %>
+      </div>
+
+      <% if(user.balance >= total){ %>
+        <form method="POST" action="/checkout">
+          <input type="hidden" name="payment_method" value="balance">
+          <button class="btn btn-orange btn-block">CONFIRM ORDER</button>
+        </form>
+      <% } else { %>
+        <a href="/deposit" class="btn btn-block">DEPOSIT FUNDS</a>
+        <p class="text-dim text-center mt-1" style="font-size:.75rem">Min deposit $50 · Max $5,000</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

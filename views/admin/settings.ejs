@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:.5rem">▸ CRYPTO WALLET SETTINGS</h2>
+<p class="text-dim" style="margin-bottom:1.5rem;font-size:.85rem">Configure your receiving addresses for deposits. Users will be given these addresses upon checkout/deposit.</p>
+
+<div class="grid grid-2" style="gap:1.5rem">
+<% coins.forEach(c => { %>
+  <div class="card">
+    <div class="flex-between mb-1">
+      <h3 style="color:var(--green)">◆ <%= c.label %> <span class="text-dim" style="font-size:.8rem">(<%= c.symbol %>)</span></h3>
+      <% const addr = settings['wallet_' + c.key]; %>
+      <span class="badge <%= addr ? 'badge-green' : 'badge-red' %>"><%= addr ? 'ACTIVE' : 'NOT SET' %></span>
+    </div>
+
+    <form method="POST" action="/admin/settings/address/<%= c.key %>">
+      <div class="form-group">
+        <label>Receiving Wallet Address</label>
+        <input type="text" name="address" value="<%= settings['wallet_' + c.key] || '' %>"
+          placeholder="Paste <%= c.symbol %> address here..." style="font-size:.85rem" required>
+      </div>
+      <button class="btn btn-sm btn-orange">SAVE ADDRESS</button>
+    </form>
+  </div>
+<% }) %>
+</div>
+
+<%- include('../partials/footer') %>

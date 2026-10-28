@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+<h2 style="margin-bottom:1rem">▸ CART</h2>
+<% if(!items.length){ %>
+  <div class="empty"><div class="icon">🛒</div><p>Cart is empty</p><a href="/shop" class="btn mt-1">SHOP NOW</a></div>
+<% } else { %>
+  <table>
+    <tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+    <% items.forEach(i => { %>
+    <tr>
+      <td><a href="/shop/<%= i.product_id %>"><%= i.name %></a></td>
+      <td>$<%= i.price.toFixed(2) %></td>
+      <td>
+        <form method="POST" action="/cart/update" class="flex">
+          <input type="hidden" name="product_id" value="<%= i.product_id %>">
+          <input type="number" name="quantity" value="<%= i.quantity %>" min="1" max="<%= i.stock %>" style="width:60px">
+          <button class="btn btn-sm">↻</button>
+        </form>
+      </td>
+      <td class="text-orange">$<%= (i.price*i.quantity).toFixed(2) %></td>
+      <td>
+        <form method="POST" action="/cart/remove">
+          <input type="hidden" name="product_id" value="<%= i.product_id %>">
+          <button class="btn btn-sm btn-red">✕</button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+  <hr>
+  <div class="flex-between">
+    <span style="font-size:1.2rem">Total: <span class="text-orange">$<%= total.toFixed(2) %></span></span>
+    <a href="/checkout" class="btn btn-orange">CHECKOUT →</a>
+  </div>
+<% } %>
+<%- include('partials/footer') %>

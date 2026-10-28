@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<p style="margin-bottom:1rem"><a href="/admin/tickets">← Back to Tickets</a></p>
+<div style="max-width:700px">
+  <div class="flex-between mb-1">
+    <h2>Ticket #<%= ticket.id %></h2>
+    <span class="badge <%= ticket.status==='closed'?'badge-dim':ticket.status==='replied'?'badge-green':'badge-orange' %>"><%= ticket.status %></span>
+  </div>
+  <div class="card mb-1">
+    <strong><%= ticket.subject %></strong>
+    <div class="text-dim" style="font-size:.8rem">From: <%= ticket.username %> | Priority: <%= ticket.priority %><% if(ticket.order_id){ %> | Order: <a href="/admin/orders/<%= ticket.order_id %>"><%= ticket.order_id %></a><% } %></div>
+  </div>
+  <div class="mb-2">
+    <% msgs.forEach(m => { %>
+      <div class="card" style="margin-bottom:.5rem;border-left:3px solid <%= m.role==='admin'?'var(--orange)':'var(--green)' %>">
+        <div class="flex-between" style="margin-bottom:.3rem">
+          <strong style="color:<%= m.role==='admin'?'var(--orange)':'var(--green)' %>"><%= m.username %> <% if(m.role==='admin'){ %>[ADMIN]<% } %></strong>
+          <span class="text-dim" style="font-size:.75rem"><%= m.created_at %></span>
+        </div>
+        <p style="white-space:pre-wrap"><%= m.message %></p>
+      </div>
+    <% }) %>
+  </div>
+  <div class="card">
+    <h3 style="color:#ddd;margin-bottom:.8rem">Admin Reply</h3>
+    <form method="POST" action="/admin/tickets/<%= ticket.id %>">
+      <div class="form-group"><textarea name="message" rows="3" placeholder="Reply to user..."></textarea></div>
+      <div class="form-group">
+        <label>Set Status</label>
+        <select name="status">
+          <option value="open" <%= ticket.status==='open'?'selected':'' %>>Open</option>
+          <option value="replied" <%= ticket.status==='replied'?'selected':'' %>>Replied</option>
+          <option value="closed" <%= ticket.status==='closed'?'selected':'' %>>Closed</option>
+        </select>
+      </div>
+      <button class="btn btn-orange">SEND REPLY</button>
+    </form>
+  </div>
+</div>
+<%- include('../partials/footer') %>

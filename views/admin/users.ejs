@@ -1,0 +1,28 @@
+<%- include('../partials/header') %>
+<h2 style="margin-bottom:1rem">▸ USERS</h2>
+<table>
+  <tr><th>ID</th><th>Username</th><th>Email</th><th>Balance</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr>
+  <% users.forEach(u => { %>
+  <tr>
+    <td class="text-dim"><%= u.id %></td>
+    <td class="<%= u.role==='admin'?'text-orange':'text-green' %>"><%= u.username %></td>
+    <td class="text-dim" style="font-size:.8rem"><%= u.email %></td>
+    <td class="text-orange">$<%= u.balance.toFixed(2) %></td>
+    <td><span class="badge <%= u.role==='admin'?'badge-orange':'badge-dim' %>"><%= u.role %></span></td>
+    <td><span class="badge <%= u.is_banned?'badge-red':'badge-green' %>"><%= u.is_banned?'BANNED':'ACTIVE' %></span></td>
+    <td class="text-dim" style="font-size:.8rem"><%= u.created_at %></td>
+    <td>
+      <% if(u.role !== 'admin'){ %>
+        <form method="POST" action="/admin/users/<%= u.id %>/ban" style="display:inline">
+          <button class="btn btn-sm <%= u.is_banned?'':'btn-red' %>"><%= u.is_banned?'UNBAN':'BAN' %></button>
+        </form>
+        <form method="POST" action="/admin/users/<%= u.id %>/balance" style="display:inline;gap:.3rem" class="flex">
+          <input type="number" name="amount" step="0.01" placeholder="±amt" style="width:80px;display:inline;padding:.25rem .4rem">
+          <button class="btn btn-sm">ADD $</button>
+        </form>
+      <% } %>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+<%- include('../partials/footer') %>

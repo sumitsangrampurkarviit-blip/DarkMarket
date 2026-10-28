@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+<p style="margin-bottom:1rem"><a href="/shop">← Back to Shop</a></p>
+<div class="two-col">
+  <div class="side" style="text-align:center">
+    <% if(product.image_url){ %>
+      <img src="<%= product.image_url %>" alt="<%= product.name %>" style="max-width:100%;border-radius:8px;border:1px solid var(--border);margin-bottom:1rem">
+    <% } else { %>
+      <div style="font-size:5rem;margin-bottom:1rem">🃏</div>
+    <% } %>
+    <span class="badge <%= product.stock>0?'badge-green':'badge-red' %>"><%= product.stock>0? product.stock+' IN STOCK':'SOLD OUT' %></span>
+  </div>
+  <div class="content">
+    <h2 style="color:#ddd;margin-bottom:.2rem"><%= product.name %></h2>
+    <div class="text-dim mb-1"><%= product.cat %></div>
+    <div style="font-size:1.8rem;color:var(--orange);margin-bottom:1rem">$<%= product.price.toFixed(2) %></div>
+    <p style="margin-bottom:1.5rem;line-height:1.6"><%= product.description %></p>
+    <% if(product.stock > 0 && user){ %>
+      <form method="POST" action="/cart/add" class="flex">
+        <input type="hidden" name="product_id" value="<%= product.id %>">
+        <input type="number" name="quantity" value="1" min="1" max="<%= product.stock %>" style="width:70px">
+        <button class="btn">ADD TO CART</button>
+      </form>
+    <% } else if(!user){ %>
+      <p class="text-dim"><a href="/auth/login">Login</a> to purchase</p>
+    <% } %>
+  </div>
+</div>
+<%- include('partials/footer') %>

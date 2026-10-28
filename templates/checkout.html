@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}CHECKOUT - SHADOW MARKET{% endblock %}
+
+{% block content %}
+<h1>SECURE CHECKOUT</h1>
+
+<form action="/checkout" method="POST" id="checkout-form">
+    <div class="two-column">
+        <div class="card">
+            <h3>SHIPPING INFORMATION</h3>
+            
+            <label for="customer_name">Full Name / Alias:</label>
+            <input type="text" id="customer_name" name="customer_name" required>
+            
+            <label for="shipping_address">Shipping Address:</label>
+            <textarea id="shipping_address" name="shipping_address" rows="5" required placeholder="Enter full shipping address including country"></textarea>
+            
+            <input type="hidden" name="cart_items" id="cart_items">
+            <input type="hidden" name="total_amount" id="total_amount">
+            <input type="hidden" name="crypto_type" id="crypto_type" value="BTC">
+        </div>
+        
+        <div class="card">
+            <h3>PAYMENT</h3>
+            <div id="order-summary" style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <!-- Summary via JS -->
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label>
+                    <input type="radio" name="crypto_choice" value="BTC" checked onchange="updateCryptoView()"> Bitcoin (BTC)
+                </label>
+                <label style="margin-left: 1rem;">
+                    <input type="radio" name="crypto_choice" value="XMR" onchange="updateCryptoView()"> Monero (XMR)
+                </label>
+            </div>
+            
+            <div id="payment-btc" class="payment-view">
+                <p>Send exact amount in BTC. Include TX fee.</p>
+                <div class="crypto-address">
+                    <span id="btc-addr">{{ btc_address }}</span>
+                    <button type="button" class="btn" onclick="copyToClipboard('btc-addr')">COPY</button>
+                </div>
+                <div class="qr-container">
+                    <img src="/qr/btc" alt="BTC QR" style="width: 150px; height: 150px; margin: 0; border: none;">
+                </div>
+            </div>
+            
+            <div id="payment-xmr" class="payment-view" style="display: none;">
+                <p>Send exact amount in XMR. Include TX fee.</p>
+                <div class="crypto-address">
+                    <span id="xmr-addr" style="font-size: 0.7rem; word-break: break-all;">{{ xmr_address }}</span>
+                    <button type="button" class="btn" onclick="copyToClipboard('xmr-addr')">COPY</button>
+                </div>
+                <div class="qr-container">
+                    <img src="/qr/xmr" alt="XMR QR" style="width: 150px; height: 150px; margin: 0; border: none;">
+                </div>
+            </div>
+            
+            <label for="tx_proof" style="margin-top:1rem; display:block;">Transaction ID / Proof:</label>
+            <input type="text" id="tx_proof" name="tx_proof" required placeholder="Paste your transaction ID after sending payment">
+            
+            <p class="flash pending" style="border: none;">Orders cannot be cancelled after submission. Verify all details.</p>
+            
+            <button type="submit" class="btn" style="width: 100%; font-size: 1.2rem; background: var(--primary-accent); color: var(--bg-color);">SUBMIT ORDER</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateCryptoView() {
+        const selected = document.querySelector('input[name="crypto_choice"]:checked').value;
+        document.getElementById('payment-btc').style.display = selected === 'BTC' ? 'block' : 'none';
+        document.getElementById('payment-xmr').style.display = selected === 'XMR' ? 'block' : 'none';
+        document.getElementById('crypto_type').value = selected;
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = Cart.getItems();
+        if(items.length === 0) {
+            window.location.href = '/cart';
+            return;
+        }
+        
+        let total = 0;
+        let summaryHtml = '<p><strong>ORDER SUMMARY:</strong></p>';
+        items.forEach(item => {
+            const sub = item.price * item.quantity;
+            total += sub;
+            summaryHtml += `<p>${item.quantity}x ${item.name} - $${sub.toFixed(2)}</p>`;
+        });
+        summaryHtml += `<p class="price" style="margin-top:0.5rem;">TOTAL: $${total.toFixed(2)}</p>`;
+        
+        document.getElementById('order-summary').innerHTML = summaryHtml;
+        document.getElementById('cart_items').value = JSON.stringify(items);
+        document.getElementById('total_amount').value = total.toFixed(2);
+    });
+</script>
+{% endblock %}
